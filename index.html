@@ -122,7 +122,11 @@
            posx = true;
         }
     })
-    
+    window.addEventListener('touchstart',(e)=>{
+        if(e){
+            velocity = -14;
+        }
+    });
     window.addEventListener('keyup',(e)=>{
         if(e.key == 'ArrowUp'){
             velocity = -14;
