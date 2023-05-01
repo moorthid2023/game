@@ -126,6 +126,17 @@
         if(e){
             velocity = -14;
         }
+        
+    });
+    window.addEventListener('touchmove',(e)=>{
+        if(e){
+        xpos = true;    
+        }
+    });
+    window.addEventListener('touchend',(e)=>{
+        if(e){
+            xpos = false;
+        }
     });
     window.addEventListener('keyup',(e)=>{
         if(e.key == 'ArrowUp'){
