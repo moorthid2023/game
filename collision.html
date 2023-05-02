@@ -6,71 +6,170 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>simpleCollision</title>
     <style>
+        *{
+            margin: 0;
+            padding: 0;
+            
+        }
+        body{
+            font-size: 1em;
+            font-weight: 500;
+            font-family: sans-serif;
+            background-color: rgba(0,0,255,0.7);
+        }
         canvas{
             border: 1px solid black;
+            background-image: url("path/to/croppedTexture.jpg");
+            background-size: cover;
+            box-shadow: 1px 5px 10px black;
         }
+        #board{
+            text-align: center;
+            color:white;
+            text-shadow: 1px 1px 10px black;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        #up,#down,#right,#left{
+            position:absolute;
+            bottom: 10px;
+            width: 100px;
+            height: 40px;
+            opacity: 0.3;
+        }
+        #up{
+            top: 60%;
+        }
+        #right{
+            top:70%;
+        }
+       #left{
+        left: -24%;
+        top: 60%;
+       }
+       #down{
+        left: -24%;
+        top: 70%;
+       }
     </style>
 </head>
 <body>
+    <div id="board">
+        <div id="heading"><h1>The Swarm Eats Grass</h1></div>
+        <canvas></canvas>
+        <button id="up">UP</button>
+        <button id="right">Right</button>
+        <button id="down">Down</button>
+        <button id="left">Left</button>
+    </div>
     
 </body>
 <script>
-    const canvas = document.createElement('canvas');
-    const body = document.querySelector('body');
-    canvas.width = 700;
-    canvas.height = 500;
-    const ctx = canvas.getContext('2d');
-    body.appendChild(canvas);
+   var blockSize = 25;
+   var total_row = 17;
+   var total_col = 17;
+   var canvas;
+   var ctx;
 
-    class Obj{
-        constructor(x,y,width,height,color){
-            this.x =x;
-            this.y=y;
-            this.width=width;
-            this.height=height;
-            this.color = color;
-            this.velocity =1;
-        }
-        draw(){
-            
-            ctx.fillStyle=this.color;
-            ctx.fillRect(this.x,this.y,this.width,this.height);
-        }
+   var snakeX = blockSize*5;
+   var snakeY = blockSize*5;
+
+   var speedX =0;
+   var speedY =0;
+
+   var snakeBody=[];
+
+   var foodX;
+   var foodY;
+
+   var gameOver = false;
+
+   window.onload = function(){
+    canvas = document.querySelector('canvas');
+    canvas.height = total_row*blockSize;
+    canvas.width = total_col*blockSize;
+    ctx = canvas.getContext('2d');
+     
+    
+    placeFood();
+    document.addEventListener('keydown',changeDirection);
+    setInterval(update, 100);
+   };
+   function update(){
+    if(gameOver){
+        return;
+    }
+    ctx.fillStyle = 'rgba(255,0,0,1)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle = 'green';
+    ctx.fillRect(foodX,foodY,blockSize,blockSize);
+
+    if(snakeX == foodX && snakeY == foodY){
+        snakeBody.push([foodX,foodY]);
+        placeFood();
+    }
+    for(let i = snakeBody.length -1;i>0;i--){
+        snakeBody[i] = snakeBody[i-1];
+    }
+    if(snakeBody.length){
+    snakeBody[0] = [snakeX,snakeY];                                                            
     }
 
-    var player = new Obj(100,100,30,30,'red');
-    var enemy = new Obj(200,100,40,40,'blue ');
-    var xx =1;
-    var yy =1;
-    var one = 1;
-    var velocity = 1;
-    var gravity = 2;
-    function animUpdate(){
-        player.draw();
-        enemy.draw();
-    }
-    function jump(){
-        player.y += player.velocity;
-        if(player.y+player.height<canvas.height){
-            player.velocity += gravity;
-            player.y = player.velocity;
-        }else player.y = canvas.height-player.height;           
+    
+    ctx.fillStyle = 'white';
+    snakeX += speedX*blockSize;
+    snakeY += speedY*blockSize;
+    ctx.fillRect(snakeX,snakeY,blockSize,blockSize);
+    ctx.strokeStyle='yellow';
+    ctx.strokeRect(snakeX,snakeY,blockSize,blockSize);
+
+    for(let i =0;i<snakeBody.length;i++){
         
+        ctx.fillStyle='white';
+        ctx.fillRect(snakeBody[i][0],snakeBody[i][1],blockSize,blockSize)
+        ctx.strokeStyle='black';
+        ctx.strokeRect(snakeBody[i][0],snakeBody[i][1],blockSize,blockSize);
     }
-    function update(){
-        ctx.clearRect(0,0,canvas.width,canvas.height)
-        requestAnimationFrame(update)
-        
-        jump();
-        animUpdate();
-    };
-    update();
-    addEventListener('keydown',(e)=>{
-        if(e.key == 'ArrowUp'){
-            player.velocity = -10;
-            
-            console.log(e.key);
+    if(snakeX<0
+       || snakeX>=total_col*blockSize
+       || snakeY <0
+       || snakeY >= total_row*blockSize){
+        gameOver = true;
+        alert('game over');
+       };
+       for(let i =0;i<snakeBody.length;i++){
+        if(snakeX == snakeBody[i][0] && snakeY == snakeBody[i][1]){
+            gameOver = true;
+            alert('game over');
         }
-    })
+
+       }
+
+
+   }
+   function changeDirection(e){
+    if(e.code == 'ArrowUp' && speedY != 1){
+        speedX = 0;
+        speedY = -1;
+    }else if(e.code == 'ArrowDown' && speedY != -1){
+        speedX = 0;
+        speedY = 1;
+    }
+    else if(e.code == 'ArrowLeft'&& speedX != 1){
+        speedX = -1;
+        speedY = 0;
+    }
+    else if(e.code == 'ArrowRight'&& speedX != -1){
+        speedX = 1;
+        speedY = 0;
+    }
+   }
+   function placeFood(){
+    foodX = Math.floor(Math.random()*total_col)*blockSize;
+    foodY = Math.floor(Math.random()*total_row)*blockSize;
+   }
 </script>
 </html>
