@@ -1,8 +1,8 @@
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = innerWidth/2;
-canvas.height =innerHeight/2;
+canvas.width = window.innerHeight*2;
+canvas.height =window.innerHeight/2;
 //  ctx.fillStyle='red';
 // ctx.fillRect(10,10,100,100)
 class Obj{
@@ -33,11 +33,11 @@ class Platform {
 
 
 const player = new Obj({x:100,y:100},30);
-const platform1 = new Platform({x: 0, y: canvas.height - 50}, canvas.width, 50);
+// const platform1 = new Platform({x: 0, y: canvas.height - 50}, canvas.width, 50);
 const platform2 = new Platform({x: 200, y: canvas.height - 200}, 150, 20);
-const platform3 = new Platform({x: 400, y: canvas.height - 250}, 150, 100);
+const platform3 = new Platform({x: 400, y: canvas.height - 250}, 150, 300);
 
-const platforms = [platform1, platform2,platform3];
+const platforms = [ platform2,platform3];
 
 function drawObjects() {
     // player.draw();                                                                                                                   
@@ -47,7 +47,7 @@ function drawObjects() {
 }
 player.draw();
 var velocity = 1;
-var gravity = 0.5;
+var gravity = 0.1;
 var xpos = false;
 var posx = false;
 var onPlatform = false;
@@ -65,10 +65,13 @@ if (player.position.y+player.height> platform.position.y &&
     player.position.x + player.width > platform.position.x &&
     player.position.x < platform.position.x + platform.width) {
   // collision detected
+  console.log('collision detected');
   onPlatform = true;      
   velocity = 0;
+  
+  posx = false;
   player.position.y = platform.position.y - player.height;   
- 
+  console.log('player.position.y'+player.position.y);
   
 }
 });
@@ -97,7 +100,7 @@ function update(){
     
     checkCollisions();
     player.draw();
-    platform1.draw();
+    // platform1.draw();
     platform2.draw();
     platform3.draw();
   
