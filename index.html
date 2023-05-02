@@ -53,13 +53,14 @@
     const player = new Obj({x:100,y:100},30);
     const platform1 = new Platform({x: 0, y: canvas.height - 50}, canvas.width, 50);
     const platform2 = new Platform({x: 200, y: canvas.height - 200}, 150, 20);
+    const platform3 = new Platform({x: 300, y: canvas.height - 350}, 150, 20);
 
-    const platforms = [platform1, platform2];
-
+    const platforms = [platform1, platform2,platform3];
+    
     function drawObjects() {
-        // player.draw();
+        // player.draw();                                                                                                                   
         platforms.forEach(platform => {
-            platform.draw();
+            platform.draw();                                                                        
         });
     }
     player.draw();
@@ -68,8 +69,11 @@
     var xpos = false;
     var posx = false;
     var onPlatform = false;
+    var onPlatform2 = false;
     var playerTop = player.position.x+player.width;                                                    
     var playerBottom = player.position.y+player.height;
+
+
 
 
     function checkCollisions() {
@@ -79,9 +83,16 @@
         player.position.x + player.width > platform.position.x &&
         player.position.x < platform.position.x + platform.width) {
       // collision detected
-      onPlatform = true;
+      onPlatform = true;      
       velocity = 0;
-      player.position.y = platform.position.y - player.height;                                                                         
+      player.position.y = platform.position.y - player.height;   
+      player.position.y = platform.position.y - player.height;
+      if (velocity < 0) { // player is moving up
+        velocity = -velocity * 0.5; // make the player bounce back up with reduced velocity
+      } else {
+        velocity = 0; // player is moving down, stop it
+      }
+      
     }
   });
 }
@@ -100,20 +111,23 @@
         if(player.position.x + player.width>canvas.width){
             player.position.x = canvas.width-player.width;
         }
-        if(player.position.y<0){player.position.y =0
+        if(player.position.y<0){
+        player.position.y =0
         velocity =0;}
+
+        
         checkCollisions();
         player.draw();
         platform1.draw();
         platform2.draw();
-
+        platform3.draw();
       
     };
     update();
 
     window.addEventListener('keydown',(e)=>{
         if(e.key == 'ArrowUp'){
-            velocity = -14;
+            velocity = -10;
             console.log(player.position);
         }
         if(e.key == 'ArrowRight'){
