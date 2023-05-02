@@ -35,7 +35,7 @@ class Platform {
 const player = new Obj({x:100,y:100},30);
 const platform1 = new Platform({x: 0, y: canvas.height - 50}, canvas.width, 50);
 const platform2 = new Platform({x: 200, y: canvas.height - 200}, 150, 20);
-const platform3 = new Platform({x: 400, y: canvas.height - 400}, 150, 200);
+const platform3 = new Platform({x: 400, y: canvas.height - 300}, 150, 200);
 
 const platforms = [platform1, platform2,platform3];
 
